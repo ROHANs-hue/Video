@@ -1,0 +1,8 @@
+{
+  "name": "Golden Shoto Karate Academy",
+  "description": "Simple karate practice portal for students and parents with quizzes and video contests.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
