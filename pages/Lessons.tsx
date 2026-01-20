@@ -1,8 +1,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDB, addSubmission } from '../lib/storage';
-import { Student, Lesson, PracticeSubmission } from '../types';
+import { getDB, addSubmission } from '../lib/storage.ts';
+import { Student, Lesson, PracticeSubmission } from '../types.ts';
 
 interface Props {
   user: Student;
@@ -83,13 +83,6 @@ const Lessons: React.FC<Props> = ({ user }) => {
 
   const currentSubmission = activeLesson ? submissions.find(s => s.lessonId === activeLesson.id) : null;
 
-  const getYouTubeLink = (embedUrl: string) => {
-    if (!embedUrl) return "#";
-    const parts = embedUrl.split('/');
-    const videoId = parts[parts.length - 1].split('?')[0];
-    return `https://www.youtube.com/watch?v=${videoId}`;
-  };
-
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
       <div className="mb-12 flex justify-between items-center">
@@ -118,8 +111,8 @@ const Lessons: React.FC<Props> = ({ user }) => {
                         <div className={`inline-block w-fit text-[10px] font-black px-2 py-0.5 rounded-full ${sub.score ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400'}`}>
                             {sub.score ? `${sub.score}/10 Marks` : 'Awaiting Grading'}
                         </div>
-                        <div className="text-[8px] font-bold uppercase text-slate-400">
-                          Recorded: {new Date(sub.timestamp).toLocaleDateString()}
+                        <div className="text-[8px] font-bold uppercase text-slate-400 mt-1">
+                          Last Record: {new Date(sub.timestamp).toLocaleDateString()}
                         </div>
                       </div>
                   )}
@@ -141,7 +134,7 @@ const Lessons: React.FC<Props> = ({ user }) => {
                   <p className="text-slate-500 text-lg">{activeLesson.description}</p>
                   {currentSubmission && (
                     <div className="mt-2 text-xs font-black text-orange-400 uppercase tracking-widest">
-                      Recording Date: {new Date(currentSubmission.timestamp).toLocaleDateString()} at {new Date(currentSubmission.timestamp).toLocaleTimeString()}
+                      Recording: {new Date(currentSubmission.timestamp).toLocaleString()}
                     </div>
                   )}
                 </div>
@@ -153,27 +146,8 @@ const Lessons: React.FC<Props> = ({ user }) => {
                 )}
               </div>
               
-              <div className="relative group">
-                <div className="aspect-video bg-black rounded-[2.5rem] overflow-hidden mb-4 border-4 border-slate-100 shadow-inner">
-                  <iframe 
-                    className="w-full h-full"
-                    src={activeLesson.videoUrl} 
-                    title="Lesson Video" 
-                    frameBorder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowFullScreen
-                  ></iframe>
-                </div>
-                <div className="flex justify-center mb-8">
-                  <a 
-                    href={getYouTubeLink(activeLesson.videoUrl)} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 bg-red-600 text-white px-6 py-2 rounded-full font-black text-xs uppercase hover:bg-red-700 transition-colors shadow-lg"
-                  >
-                    <span className="text-lg">▶</span> Open in YouTube
-                  </a>
-                </div>
+              <div className="aspect-video bg-black rounded-[2.5rem] overflow-hidden mb-8 border-4 border-slate-100 shadow-inner">
+                <iframe className="w-full h-full" src={activeLesson.videoUrl} title="Lesson Video" frameBorder="0" allowFullScreen></iframe>
               </div>
 
               {currentSubmission?.feedback && (
@@ -198,7 +172,7 @@ const Lessons: React.FC<Props> = ({ user }) => {
                     ) : (
                       <video src={recordedUrl} className="w-full h-full object-cover" controls autoPlay></video>
                     )}
-                    {isRecording && <div className="absolute top-8 right-8 flex items-center gap-3 bg-red-600 px-6 py-2.5 rounded-full text-white font-black text-sm animate-pulse">● RECORDING MOVES</div>}
+                    {isRecording && <div className="absolute top-8 right-8 flex items-center gap-3 bg-red-600 px-6 py-2.5 rounded-full text-white font-black text-sm animate-pulse">● RECORDING</div>}
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -215,14 +189,12 @@ const Lessons: React.FC<Props> = ({ user }) => {
                       </>
                     )}
                   </div>
-                  <button onClick={() => setShowRecorder(false)} className="w-full text-slate-400 font-bold uppercase text-[10px]">Back to Lesson</button>
                 </div>
               )}
             </div>
           ) : (
             <div className="h-full flex flex-col items-center justify-center p-20 bg-slate-50 rounded-[3rem] border-4 border-dashed border-slate-100 text-slate-300">
-              <div className="text-8xl mb-6 opacity-20">🥋</div>
-              <p className="text-2xl font-black uppercase italic tracking-widest text-center">Select a lesson to start your practice</p>
+              <p className="text-2xl font-black uppercase italic tracking-widest text-center">Select a lesson to start</p>
             </div>
           )}
         </div>

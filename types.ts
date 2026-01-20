@@ -42,7 +42,7 @@ export interface Student {
   achievements: string[];
 }
 
-// Added Question interface to resolve import error in pages/Quiz.tsx
+// Fixed: Added Question interface for the quiz system
 export interface Question {
   id: string;
   belt: Belt;
@@ -51,7 +51,7 @@ export interface Question {
   correctAnswerIndex: number;
 }
 
-// Added QuizResult interface to resolve import error in pages/Quiz.tsx and missing properties in AppState
+// Fixed: Added QuizResult interface for tracking student performance
 export interface QuizResult {
   id: string;
   studentName: string;
@@ -67,11 +67,11 @@ export interface QuizResult {
   }[];
 }
 
+// Fixed: Updated AppState to include questions and results
 export interface AppState {
   students: Student[];
   lessons: Lesson[];
   submissions: PracticeSubmission[];
-  // Added questions and results properties to fix AppState errors in Quiz.tsx and LeaderboardPage.tsx
   questions: Question[];
   results: QuizResult[];
 }

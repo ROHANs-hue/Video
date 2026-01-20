@@ -1,14 +1,14 @@
 
-import { AppState, Student, Belt, Lesson, PracticeSubmission, Question, QuizResult } from '../types';
+import { AppState, Student, Belt, Lesson, PracticeSubmission, Question, QuizResult } from '../types.ts';
 
-const STORAGE_KEY = 'golden_shoto_academy_v5_prod';
+const STORAGE_KEY = 'golden_shoto_academy_v6';
 const SESSION_KEY = 'gs_auth_session';
 
+// Fixed: Added questions and results to initial state
 const INITIAL_STATE: AppState = {
   students: [],
   lessons: [],
   submissions: [],
-  // Initialize new fields
   questions: [],
   results: []
 };
@@ -18,17 +18,16 @@ export const getDB = (): AppState => {
   if (!data) return INITIAL_STATE;
   try {
     const parsed = JSON.parse(data);
+    // Fixed: Ensure questions and results are included when parsing storage
     return {
-      ...INITIAL_STATE,
-      ...parsed,
       students: Array.isArray(parsed.students) ? parsed.students : [],
       lessons: Array.isArray(parsed.lessons) ? parsed.lessons : [],
       submissions: Array.isArray(parsed.submissions) ? parsed.submissions : [],
-      // Ensure new arrays are correctly populated during hydration from storage
       questions: Array.isArray(parsed.questions) ? parsed.questions : [],
       results: Array.isArray(parsed.results) ? parsed.results : []
     };
-  } catch {
+  } catch (e) {
+    console.error("Storage parse error", e);
     return INITIAL_STATE;
   }
 };
@@ -67,7 +66,7 @@ export const addSubmission = (sub: PracticeSubmission) => {
   saveDB(db);
 };
 
-// Added addResult to fix the error in pages/Quiz.tsx
+// Fixed: Added addResult function to persist quiz outcomes
 export const addResult = (result: QuizResult) => {
   const db = getDB();
   db.results.push(result);

@@ -1,9 +1,11 @@
 
 import React from 'react';
-import { getDB } from '../lib/storage';
+// Fixed: Corrected import extension for consistency
+import { getDB } from '../lib/storage.ts';
 
 const LeaderboardPage: React.FC = () => {
   const db = getDB();
+  // Fixed: db.results now correctly exists on AppState
   const sortedResults = [...db.results].sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score;
     return a.timeSpent - b.timeSpent;

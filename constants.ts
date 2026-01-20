@@ -1,5 +1,5 @@
 
-import { Belt } from './types';
+import { Belt } from './types.ts';
 
 export const ACADEMY_NAME = "Golden Shoto Karate Academy";
 export const TRAINER_PIN = "2005";
@@ -17,6 +17,6 @@ export const BELTS: Belt[] = [
   Belt.BROWN_3_BLACK
 ];
 
-// Added constants used in pages/Quiz.tsx
+// Fixed: Added constants for the quiz feature
 export const QUIZ_QUESTION_COUNT = 10;
-export const QUIZ_TIME_LIMIT_SECONDS = 300; // 5 minutes
+export const QUIZ_TIME_LIMIT_SECONDS = 300;

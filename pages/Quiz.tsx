@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Student, Question } from '../types';
-import { getDB, addResult } from '../lib/storage';
-import { QUIZ_QUESTION_COUNT, QUIZ_TIME_LIMIT_SECONDS } from '../constants';
+// Fixed: Corrected import extensions for consistency and resolution
+import { Student, Question } from '../types.ts';
+import { getDB, addResult } from '../lib/storage.ts';
+import { QUIZ_QUESTION_COUNT, QUIZ_TIME_LIMIT_SECONDS } from '../constants.ts';
 
 interface Props {
   user: Student;
@@ -19,6 +20,7 @@ const Quiz: React.FC<Props> = ({ user }) => {
 
   useEffect(() => {
     const db = getDB();
+    // Fixed: db.questions now correctly exists on AppState
     let pool = db.questions.filter(q => q.belt === user.belt);
     if (pool.length === 0) {
       setQuestions([]);

@@ -1,47 +1,47 @@
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ACADEMY_NAME } from '../constants';
-import { getDB } from '../lib/storage';
-import { Student } from '../types';
+import { ACADEMY_NAME } from '../constants.ts';
+import { getDB } from '../lib/storage.ts';
+import { Student } from '../types.ts';
 
 interface Props {
   user: Student | null;
 }
 
 const Home: React.FC<Props> = ({ user }) => {
-  const db = getDB();
+  const scoreboardData = useMemo(() => {
+    const db = getDB();
+    const scoresMap = new Map();
 
-  // Aggregate points per student using a Map
-  const scoresMap = new Map();
-
-  // Initialize scores for all registered students
-  db.students.forEach(student => {
-    scoresMap.set(student.id, {
-      id: student.id,
-      displayName: student.displayName,
-      belt: student.belt,
-      totalPoints: 0
+    // Initialize scores for all registered students
+    db.students.forEach(student => {
+      scoresMap.set(student.id, {
+        id: student.id,
+        displayName: student.displayName,
+        belt: student.belt,
+        totalPoints: 0
+      });
     });
-  });
 
-  // Correctly sum marks from submissions
-  db.submissions.forEach(sub => {
-    if (sub.score && sub.score > 0) {
-      const entry = scoresMap.get(sub.studentId);
-      if (entry) {
-        entry.totalPoints += sub.score;
+    // Correctly sum marks from submissions
+    db.submissions.forEach(sub => {
+      if (sub.score !== undefined && sub.score !== null) {
+        const entry = scoresMap.get(sub.studentId);
+        if (entry) {
+          entry.totalPoints += Number(sub.score);
+        }
       }
-    }
-  });
+    });
 
-  // Sort scores and get top 10
-  const sortedScores = Array.from(scoresMap.values())
-    .filter(s => s.totalPoints > 0)
-    .sort((a, b) => b.totalPoints - a.totalPoints)
-    .slice(0, 10);
-  
-  const nunchuckMaster = sortedScores[0];
+    // Sort scores and get top 10
+    return Array.from(scoresMap.values())
+      .filter(s => s.totalPoints > 0)
+      .sort((a, b) => b.totalPoints - a.totalPoints)
+      .slice(0, 10);
+  }, []);
+
+  const nunchuckMaster = scoreboardData[0];
 
   return (
     <div className="bg-white min-h-screen">
@@ -60,7 +60,7 @@ const Home: React.FC<Props> = ({ user }) => {
           <br/>{user ? 'Master Your Form' : 'At Your Own Pace'}
         </h1>
         <p className="text-slate-500 text-xl md:text-2xl mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
-          The official digital training portal for students and parents. Record your moves, get sensei feedback, and climb the ranks!
+          The official digital training portal. Record your moves, get sensei feedback, and climb the ranks!
         </p>
         
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
@@ -86,7 +86,7 @@ const Home: React.FC<Props> = ({ user }) => {
           <div className="text-8xl animate-bounce filter drop-shadow-[0_0_15px_rgba(251,146,60,0.6)]">🪃</div>
           <div className="text-center md:text-left text-white">
             <h2 className="text-4xl font-black text-orange-500 uppercase italic mb-2">Dojo Legend Award</h2>
-            <p className="text-lg font-bold mb-6 text-slate-300">Awarded monthly to the student with the highest video performance marks.</p>
+            <p className="text-lg font-bold mb-6 text-slate-300">Highest performance marks in the Dojo.</p>
             {nunchuckMaster ? (
                 <div className="bg-orange-500/20 border-2 border-orange-500/40 p-6 rounded-3xl inline-block backdrop-blur-sm">
                     <p className="text-orange-400 font-black text-[10px] uppercase tracking-widest mb-1">Current Prize Holder:</p>
@@ -107,7 +107,7 @@ const Home: React.FC<Props> = ({ user }) => {
         </div>
 
         <div className="space-y-6">
-          {sortedScores.length > 0 ? sortedScores.map((s, idx) => (
+          {scoreboardData.length > 0 ? scoreboardData.map((s, idx) => (
             <div key={s.id} className={`p-8 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between transition-all border-4 ${idx === 0 ? 'bg-orange-50 border-orange-500 shadow-2xl scale-[1.02]' : 'bg-white border-slate-50 hover:border-orange-100'}`}>
               <div className="flex items-center gap-8 mb-6 md:mb-0">
                 <span className={`text-5xl font-black ${idx === 0 ? 'text-orange-600' : 'text-slate-200'}`}>#{idx + 1}</span>

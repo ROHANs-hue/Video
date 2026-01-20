@@ -1,24 +1,29 @@
 
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
-import { ACADEMY_NAME, TRAINER_PIN } from './constants';
-import { Student } from './types';
-import { getSessionUser, setSessionUser as saveSession } from './lib/storage';
+import { ACADEMY_NAME, TRAINER_PIN } from './constants.ts';
+import { Student } from './types.ts';
+import { getSessionUser, setSessionUser as saveSession } from './lib/storage.ts';
 
 // Pages
-import Home from './pages/Home';
-import StudentLogin from './pages/StudentLogin';
-import TrainerPortal from './pages/TrainerPortal';
-import Lessons from './pages/Lessons';
+import Home from './pages/Home.tsx';
+import StudentLogin from './pages/StudentLogin.tsx';
+import TrainerPortal from './pages/TrainerPortal.tsx';
+import Lessons from './pages/Lessons.tsx';
 
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<Student | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const user = getSessionUser();
-    if (user) setCurrentUser(user);
-    setLoading(false);
+    try {
+      const user = getSessionUser();
+      if (user) setCurrentUser(user);
+    } catch (e) {
+      console.error("Session restoration failed", e);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const handleSetUser = (user: Student | null) => {
@@ -47,7 +52,7 @@ const App: React.FC = () => {
                   <Link to="/lessons" className="text-orange-600 hover:underline uppercase text-xs">Practice Room</Link>
                   <div className="flex items-center gap-4 bg-orange-50 px-4 py-2 rounded-2xl border border-orange-100">
                     <span className="text-orange-700">Student: {currentUser.displayName}</span>
-                    <button onClick={() => handleSetUser(null)} className="text-orange-400 hover:text-orange-600 text-[10px]">LOGOUT</button>
+                    <button onClick={() => handleSetUser(null)} className="text-orange-400 hover:text-orange-600 text-[10px] ml-2">LOGOUT</button>
                   </div>
                 </div>
               ) : (

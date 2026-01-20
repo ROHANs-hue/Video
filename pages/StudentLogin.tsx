@@ -1,9 +1,9 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BELTS } from '../constants';
-import { Belt, Student } from '../types';
-import { loginStudent, registerStudent } from '../lib/storage';
+import { BELTS } from '../constants.ts';
+import { Belt, Student } from '../types.ts';
+import { loginStudent, registerStudent } from '../lib/storage.ts';
 
 interface Props {
   onLogin: (user: Student) => void;
